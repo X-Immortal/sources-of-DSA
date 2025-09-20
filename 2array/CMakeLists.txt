@@ -1,0 +1,2 @@
+add_executable(1dynamic_array 1dynamic_array.cpp)
+add_executable(2two_dimension_array 2two_dimension_array.cpp)

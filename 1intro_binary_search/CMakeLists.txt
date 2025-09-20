@@ -1,0 +1,3 @@
+add_executable(1basic_binary_search 1basic_binary_search.cpp)
+add_executable(2java_binary_search 2java_binary_search.cpp)
+add_executable(3leftmost_rightmost_binary_search 3leftmost_rightmost_binary_search.cpp)
