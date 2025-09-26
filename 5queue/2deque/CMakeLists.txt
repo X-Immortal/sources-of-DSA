@@ -1,0 +1,2 @@
+add_executable(1LinkedListDeque 1LinkedListDeque.cpp)
+add_executable(2ArrayDeque 2ArrayDeque.cpp)
