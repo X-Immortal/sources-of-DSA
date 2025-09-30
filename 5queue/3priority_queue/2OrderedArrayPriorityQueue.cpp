@@ -32,6 +32,7 @@ public:
         delete[] array;
     }
 
+    // 时间复杂度: O(n)
     bool offer(const T &value) override {
         if (isFull()) {
             return false;
@@ -40,6 +41,7 @@ public:
         return true;
     }
 
+    // 时间复杂度: O(1)
     T poll() override {
         if (isEmpty()) {
             throw std::out_of_range("Queue is empty");

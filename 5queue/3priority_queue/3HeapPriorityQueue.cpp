@@ -4,9 +4,11 @@
 #include <iostream>
 #include "Priority.h"
 #include "../Queue.h"
+#include <string>
 
 using std::cout;
 using std::endl;
+using std::string;
 
 template<class T>
 class HeapPriorityQueue : public Queue<T> {
@@ -31,27 +33,60 @@ public:
         delete[] array;
     }
 
+    // 时间复杂度: O(log n)
     bool offer(const T &value) override {
         if (isFull()) {
             return false;
         }
-        int new_elem = size++;
-        int parent_elem = parent(new_elem);
-        T *temp;
-        while (parent_elem >= 0 && array[parent_elem]->priority() < value.priority()) {
-            temp = array[parent_elem];
-            array[parent_elem] = array[new_elem];
-            array[new_elem] = temp;
-            new_elem = parent_elem;
-            parent_elem = parent(new_elem);
+        int child_index = size++;
+        int parent_index = parent(child_index);
+        while (parent_index >= 0 && array[parent_index]->priority() < value.priority()) {
+            array[child_index] = array[parent_index];
+            child_index = parent_index;
+            parent_index = parent(child_index);
         }
-        array[new_elem] = new T(value);
+        array[child_index] = new T(value);
         return true;
     }
 
-    T poll() override;
+    // 时间复杂度: O(log n)
+    T poll() override {
+        if (isEmpty()) {
+            throw std::out_of_range("PriorityQueue is empty");
+        }
 
-    T peek() const override;
+        T *head = array[0];
+        T *tail = array[--size];
+        int tail_index = 0;
+        int left_index = left(tail_index);
+        int right_index = right(tail_index);
+
+        while ((left_index >= 0 && tail->priority() < array[left_index]->priority()) ||
+                (right_index >= 0 && tail->priority() < array[right_index]->priority())) {
+            if (array[left_index]->priority() > tail->priority() &&
+                (right_index < 0 || array[left_index]->priority() > array[right_index]->priority())) {
+                array[tail_index] = array[left_index];
+                tail_index = left_index;
+            } else {
+                array[tail_index] = array[right_index];
+                tail_index = right_index;
+            }
+            left_index = left(tail_index);
+            right_index = right(tail_index);
+        }
+        array[tail_index] = tail;
+
+        T ret = *head;
+        delete head;
+        return ret;
+    }
+
+    T peek() const override {
+        if (isEmpty()) {
+            throw std::out_of_range("PriorityQueue is empty");
+        }
+        return *array[0];
+    }
 
     bool isEmpty() const override {
         return size == 0;
@@ -76,3 +111,34 @@ private:
         return ret >= size ? -1 : ret;
     }
 };
+
+template<class T>
+using PriorityQueue = HeapPriorityQueue<T>;
+
+class Entry : public Priority {
+    string value;
+    int m_priority;
+
+public:
+    Entry(const string &value, int priority) : value(value), m_priority(priority) {}
+
+    int priority() const override {
+        return m_priority;
+    }
+};
+int main() {
+    PriorityQueue<Entry> queue(5);
+    queue.offer(Entry("task1", 4));
+    queue.offer(Entry("task2", 3));
+    queue.offer(Entry("task3", 2));
+    queue.offer(Entry("task4", 5));
+    queue.offer(Entry("task5", 1));
+    queue.offer(Entry("task6", 6));
+
+    cout << queue.poll().priority() << endl;
+    cout << queue.poll().priority() << endl;
+    cout << queue.poll().priority() << endl;
+    cout << queue.poll().priority() << endl;
+    cout << queue.poll().priority() << endl;
+    return 0;
+}
