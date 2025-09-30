@@ -11,8 +11,7 @@ using std::endl;
 // 带哨兵的双向链表
 class DoublyLinkedListWithSentinel {
     class Node {
-        friend class DoublyLinkedListWithSentinel;
-
+    public:
         Node *prev;
         int value;
         Node *next;

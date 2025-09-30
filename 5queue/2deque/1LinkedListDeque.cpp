@@ -10,13 +10,25 @@ using std::endl;
 
 template<class T>
 class LinkedListDeque : public Deque<T> {
+    static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
+
     class Node {
     public:
         Node *prev;
-        T value;
+        T *value;
         Node *next;
 
-        explicit Node(T value = T(), Node *prev = nullptr, Node *next = nullptr) : prev(prev), value(value), next(next) {}
+        explicit Node(const T *value = nullptr, Node *prev = nullptr, Node *next = nullptr) : prev(prev), next(next) {
+            if (value == nullptr) {
+                this->value = nullptr;
+            } else {
+                this->value = new T(*value);
+            }
+        }
+
+        ~Node() {
+            delete value;
+        }
     };
 
     int capacity;
@@ -39,21 +51,21 @@ public:
         delete sentinel;
     }
 
-    bool offerFirst(T e) override {
+    bool offerFirst(const T &e) override {
         if (isFull()) {
             return false;
         }
-        Node *node = new Node(e, sentinel, sentinel->next);
+        Node *node = new Node(&e, sentinel, sentinel->next);
         node->prev->next = node->next->prev = node;
         size++;
         return true;
     }
 
-    bool offerLast(T e) override {
+    bool offerLast(const T &e) override {
         if (isFull()) {
             return false;
         }
-        Node *node = new Node(e, sentinel->prev, sentinel);
+        Node *node = new Node(&e, sentinel->prev, sentinel);
         node->prev->next = node->next->prev = node;
         size++;
         return true;
@@ -66,7 +78,7 @@ public:
         Node *node = sentinel->next;
         node->next->prev = sentinel;
         sentinel->next = node->next;
-        T ret = node->value;
+        T ret = *node->value;
         delete node;
         size--;
         return ret;
@@ -79,31 +91,31 @@ public:
         Node *node = sentinel->prev;
         node->prev->next = sentinel;
         sentinel->prev = node->prev;
-        T ret = node->value;
+        T ret = *node->value;
         delete node;
         size--;
         return ret;
     }
 
-    T peekFirst() override {
+    T peekFirst() const override {
         if (isEmpty()) {
             throw std::runtime_error("deque is empty!");
         }
-        return sentinel->next->value;
+        return *sentinel->next->value;
     }
 
-    T peekLast() override {
+    T peekLast() const override {
         if (isEmpty()) {
             throw std::runtime_error("deque is empty!");
         }
-        return sentinel->prev->value;
+        return *sentinel->prev->value;
     }
 
-    bool isEmpty() override {
+    bool isEmpty() const override {
         return size == 0;
     }
 
-    bool isFull() override {
+    bool isFull() const override {
         return size == capacity;
     }
 
@@ -118,7 +130,7 @@ public:
         }
 
         reference operator*() const {
-            return cur->value;
+            return *cur->value;
         }
 
         Iterator &operator++() {

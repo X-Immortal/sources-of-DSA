@@ -12,8 +12,7 @@ using std::endl;
 class SinglyLinkedListWithSentinel {
     // 链表与节点为组合关系，应将节点定义为内部类
     class Node {
-        friend class SinglyLinkedListWithSentinel;
-
+    public:
         int value;
         Node *next;
 

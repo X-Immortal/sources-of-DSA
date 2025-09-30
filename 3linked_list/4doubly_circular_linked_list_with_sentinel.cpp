@@ -9,8 +9,7 @@ using std::endl;
 
 class DoublyCircularLinkedListWithSentinel {
     class Node {
-        friend class DoublyCircularLinkedListWithSentinel;
-
+    public:
         Node *prev;
         int value;
         Node *next;
@@ -156,7 +155,7 @@ public:
     }
 
 private:
-    Node *findByValue(int value) {
+    Node *findByValue(int value) const {
         for (Node *cur = head->next; cur != head; cur = cur->next) {
             if (cur->value == value) {
                 return cur;

@@ -9,34 +9,39 @@ using std::endl;
 
 template<class T>
 class ArrayDeque : public Deque<T> {
-    T *array;
+    static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
+
+    T **array;
     int capacity;
     int head;
     int tail;
 
 public:
     explicit ArrayDeque(int capacity) : capacity(capacity) {
-        array = new T[capacity + 1];
+        array = new T *[capacity + 1];
         head = tail = 0;
     }
 
     ~ArrayDeque() override {
+        for (int i = head; i != tail; i = inc(i)) {
+            delete array[i];
+        }
         delete[] array;
     }
 
-    bool offerFirst(T e) override {
+    bool offerFirst(const T &e) override {
         if (isFull()) {
             return false;
         }
-        array[head = dec(head)] = e;
+        array[head = dec(head)] = new T(e);
         return true;
     }
 
-    bool offerLast(T e) override {
+    bool offerLast(const T &e) override {
         if (isFull()) {
             return false;
         }
-        array[tail] = e;
+        array[tail] = new T(e);
         tail = inc(tail);
         return true;
     }
@@ -45,8 +50,10 @@ public:
         if (isEmpty()) {
             throw std::runtime_error("deque is empty!");
         }
-        T ret = array[head];
+        T *elem = array[head];
+        T ret = *elem;
         head = inc(head);
+        delete elem;
         return ret;
     }
 
@@ -54,28 +61,31 @@ public:
         if (isEmpty()) {
             throw std::runtime_error("deque is empty!");
         }
-        return array[tail = dec(tail)];
+        T *elem = array[tail = dec(tail)];
+        T ret = *elem;
+        delete elem;
+        return ret;
     }
 
-    T peekFirst() override {
+    T peekFirst() const override {
         if (isEmpty()) {
             throw std::runtime_error("deque is empty!");
         }
-        return array[head];
+        return *array[head];
     }
 
-    T peekLast() override {
+    T peekLast() const override {
         if (isEmpty()) {
             throw std::runtime_error("deque is empty!");
         }
-        return array[dec(tail)];
+        return *array[dec(tail)];
     }
 
-    bool isEmpty() override {
+    bool isEmpty() const override {
         return head == tail;
     }
 
-    bool isFull() override {
+    bool isFull() const override {
         return tail - head == capacity || head - tail == 1;
     }
 
@@ -90,7 +100,7 @@ public:
         }
 
         reference operator*() const {
-            return deque->array[cur];
+            return *deque->array[cur];
         }
 
         Iterator &operator++() {

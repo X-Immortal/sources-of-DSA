@@ -63,7 +63,7 @@ public:
     }
 
     // 查询时间复杂度：O(1)
-    int get(int index) {
+    int get(int index) const {
         if (index < 0 || index >= size) {
             throw std::runtime_error("index out of range");
         }

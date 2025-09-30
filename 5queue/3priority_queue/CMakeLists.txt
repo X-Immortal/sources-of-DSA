@@ -1,1 +1,3 @@
 add_executable(1DisorderedArrayPriorityQueue 1DisorderedArrayPriorityQueue.cpp)
+add_executable(2OrderedArrayPriorityQueue 2OrderedArrayPriorityQueue.cpp)
+add_executable(3HeapPriorityQueue 3HeapPriorityQueue.cpp)

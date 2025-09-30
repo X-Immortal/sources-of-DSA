@@ -2,7 +2,7 @@
 // Created by xyx on 2025/9/13.
 //
 
-#include "Queue.h"
+#include "../Queue.h"
 #include <iostream>
 
 using std::cout;
@@ -10,7 +10,9 @@ using std::endl;
 
 template<class T>
 class ArrayQueue : public Queue<T> {
-    T *array;
+    static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
+
+    T **array;
     int head = 0;
     int tail = 0;
     int capacity;
@@ -18,18 +20,21 @@ class ArrayQueue : public Queue<T> {
 
 public:
     explicit ArrayQueue(int capacity) : capacity(capacity) {
-        array = new T[capacity + 1];
+        array = new T *[capacity + 1];
     }
 
     ~ArrayQueue() override {
+        for (int i = 0; i < size; i++) {
+            delete array[i];
+        }
         delete[] array;
     }
 
-    bool offer(T value) override {
+    bool offer(const T &value) override {
         if (isFull()) {
             return false;
         }
-        array[tail] = value;
+        array[tail] = new T(value);
         tail = (tail + 1) % (capacity + 1);
         size++;
         return true;
@@ -39,24 +44,26 @@ public:
         if (isEmpty()) {
             throw std::runtime_error("Queue is empty");
         }
-        int index = head;
+        T *elem = array[head];
         head = (head + 1) % (capacity + 1);
         size--;
-        return array[index];
+        T ret = *elem;
+        delete elem;
+        return ret;
     }
 
-    T peek() override {
+    T peek() const override {
         if (isEmpty()) {
             throw std::runtime_error("Queue is empty");
         }
-        return array[head];
+        return *array[head];
     }
 
-    bool isEmpty() override {
+    bool isEmpty() const override {
         return head == tail;
     }
 
-    bool isFull() override {
+    bool isFull() const override {
         return (tail + 1) % (capacity + 1) == head;
     }
 
@@ -71,7 +78,7 @@ public:
         }
 
         reference operator*() const {
-            return queue->array[cur];
+            return *queue->array[cur];
         }
 
         Iterator &operator++() {

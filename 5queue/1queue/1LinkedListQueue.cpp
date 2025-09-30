@@ -2,7 +2,7 @@
 // Created by xyx on 2025/9/13.
 //
 
-#include "Queue.h"
+#include "../Queue.h"
 #include <iostream>
 #include <climits>
 
@@ -11,14 +11,24 @@ using std::endl;
 
 template<class T>
 class LinkedListQueue : public Queue<T> {
-    class Node {
-        friend class LinkedListQueue;
+    static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
 
-        T value;
+    class Node {
+    public:
+        T *value;
         Node *next;
 
-    public:
-        explicit Node(T value = T(), Node *next = nullptr) : value(value), next(next) {}
+        explicit Node(const T *value = nullptr, Node *next = nullptr) : next(next) {
+            if (value == nullptr) {
+                this->value = nullptr;
+            } else {
+                this->value = new T(*value);
+            }
+        }
+
+        ~Node() {
+            delete value;
+        }
     };
 
     Node *head;
@@ -41,11 +51,11 @@ public:
         delete tail;
     }
 
-    bool offer(T value) override {
+    bool offer(const T &value) override {
         if (isFull()) {
             return false;
         }
-        tail->next = new Node(value, head);
+        tail->next = new Node(&value, head);
         tail = tail->next;
         size++;
         return true;
@@ -57,7 +67,7 @@ public:
         }
         Node *node = head->next;
         head->next = node->next;
-        T ret = node->value;
+        T ret = *node->value;
         if (node == tail) {
             tail = head;
         }
@@ -66,18 +76,18 @@ public:
         return ret;
     }
 
-    T peek() override {
+    T peek() const override {
         if (isEmpty()) {
             throw std::runtime_error("queue is empty!");
         }
-        return head->next->value;
+        return *head->next->value;
     }
 
-    bool isEmpty() override {
+    bool isEmpty() const override {
         return head == tail;
     }
 
-    bool isFull() override {
+    bool isFull() const override {
         return size >= capacity;
     }
 
@@ -92,7 +102,7 @@ public:
         }
 
         reference operator*() const {
-            return cur->value;
+            return *cur->value;
         }
 
         Iterator &operator++() {

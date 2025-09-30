@@ -16,8 +16,7 @@ using std::endl;
 class SinglyLinkedList {
     // 链表与节点为组合关系，应将节点定义为内部类
     class Node {
-        friend class SinglyLinkedList;
-
+    public:
         int value;
         Node *next;
 
@@ -167,7 +166,7 @@ public:
         return size;
     }
 
-    void print() {
+    void print() const {
         recursion(head);
     }
 
@@ -183,7 +182,7 @@ private:
         return cur;
     }
 
-    void recursion(Node *cur) {
+    void recursion(Node *cur) const {
         if (cur == nullptr) {
             cout << endl;
             return;

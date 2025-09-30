@@ -9,7 +9,7 @@ class Priority {
 public:
     virtual ~Priority() = default;
 
-    virtual int priority() = 0;
+    virtual int priority() const = 0;
 };
 
 #endif //ONLINE_CLASS_PRIORITY_H

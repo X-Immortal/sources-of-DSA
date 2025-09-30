@@ -1,19 +1,17 @@
 //
-// Created by xyx on 2025/9/27.
+// Created by xyx on 2025/9/28.
 //
 #include <iostream>
-#include "../Queue.h"
 #include "Priority.h"
-#include <algorithm>
+#include "../Queue.h"
 #include <string>
-#include <cstring>
 
 using std::cout;
 using std::endl;
 using std::string;
 
 template<class T>
-class DisorderedArrayPriorityQueue : public Queue<T> {
+class OrderedArrayPriorityQueue : public Queue<T> {
     static_assert(std::is_base_of_v<Priority, T>, "T must inherit from Priority");
     static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
     static_assert(std::is_copy_assignable_v<T>, "T must be copy assignable");
@@ -23,11 +21,11 @@ class DisorderedArrayPriorityQueue : public Queue<T> {
     int size;
 
 public:
-    explicit DisorderedArrayPriorityQueue(int capacity) : capacity(capacity), size(0) {
+    explicit OrderedArrayPriorityQueue(int capacity) : capacity(capacity), size(0) {
         array = new T *[capacity];
     }
 
-    ~DisorderedArrayPriorityQueue() override {
+    ~OrderedArrayPriorityQueue() override {
         for (int i = 0; i < size; i++) {
             delete array[i];
         }
@@ -38,7 +36,7 @@ public:
         if (isFull()) {
             return false;
         }
-        array[size++] = new T(value);
+        insert(value);
         return true;
     }
 
@@ -46,14 +44,16 @@ public:
         if (isEmpty()) {
             throw std::out_of_range("Queue is empty");
         }
-        return remove(findMax());
+        T ret = *array[--size];
+        delete array[size];
+        return ret;
     }
 
     T peek() const override {
         if (isEmpty()) {
             throw std::out_of_range("Queue is empty");
         }
-        return *array[findMax()];
+        return *array[size - 1];
     }
 
     bool isEmpty() const override {
@@ -65,43 +65,24 @@ public:
     }
 
 private:
-    int findMax() const {
-        if (isEmpty()) {
-            return -1;
+    void insert(const T &elem) {
+        int i;
+        for (i = size - 1; i >= 0 && array[i]->priority() > elem.priority(); i--) {
+            array[i + 1] = array[i];
         }
-        int max_index = 0;
-        for (int i = 1; i < size; i++) {
-            if (array[i]->priority() > array[max_index]->priority()) {
-                max_index = i;
-            }
-        }
-        return max_index;
-    }
-
-    T remove(int index) {
-        if (index < 0 || index >= size) {
-            throw std::out_of_range("Index out of range");
-        }
-        T ret = *array[index];
-        delete array[index];
-        memmove(array + index, array + index + 1, (size - 1 - index) * sizeof(*array));
-        size--;
-        return ret;
+        array[i + 1] = new T(elem);
+        size++;
     }
 };
 
 template<class T>
-using PriorityQueue = DisorderedArrayPriorityQueue<T>;
+using PriorityQueue = OrderedArrayPriorityQueue<T>;
 
 class Entry : public Priority {
     string value;
     int m_priority;
 
 public:
-    Entry() {
-        m_priority = -1;
-    }
-
     Entry(const string &value, int priority) : value(value), m_priority(priority) {}
 
     int priority() const override {

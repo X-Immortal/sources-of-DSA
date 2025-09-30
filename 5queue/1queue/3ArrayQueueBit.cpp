@@ -2,7 +2,7 @@
 // Created by xyx on 2025/9/13.
 //
 
-#include "Queue.h"
+#include "../Queue.h"
 #include <iostream>
 
 using std::cout;
@@ -10,7 +10,9 @@ using std::endl;
 
 template<class T>
 class ArrayQueueBit : public Queue<T> {
-    T *array;
+    static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
+
+    T **array;
     int head = 0;
     int tail = 0;
     int real_capacity;
@@ -20,18 +22,22 @@ public:
     explicit ArrayQueueBit(int capacity) {
         this->capacity = capacity;
         real_capacity = log2_ceil(capacity);
-        array = new T[this->real_capacity];
+        array = new T *[real_capacity];
     }
 
     ~ArrayQueueBit() override {
+        for (int i = head; i < tail; i++) {
+            delete array[i & real_capacity - 1];
+        }
         delete[] array;
     }
 
-    bool offer(T value) override {
+    bool offer(const T &value) override {
         if (isFull()) {
             return false;
         }
-        array[tail++ & real_capacity - 1] = value;
+        // & 相当于 %
+        array[tail++ & real_capacity - 1] = new T(value);
         return true;
     }
 
@@ -39,21 +45,25 @@ public:
         if (isEmpty()) {
             throw std::runtime_error("Queue is empty");
         }
-        return array[head++ & real_capacity - 1];
+        T *elem = array[head & real_capacity - 1];
+        head++;
+        T ret = *elem;
+        delete elem;
+        return ret;
     }
 
-    T peek() override {
+    T peek() const override {
         if (isEmpty()) {
             throw std::runtime_error("Queue is empty");
         }
-        return array[head & real_capacity - 1];
+        return *array[head & real_capacity - 1];
     }
 
-    bool isEmpty() override {
+    bool isEmpty() const override {
         return head == tail;
     }
 
-    bool isFull() override {
+    bool isFull() const override {
         return tail - head == capacity;
     }
 
@@ -68,7 +78,7 @@ public:
         }
 
         reference operator*() const {
-            return queue->array[cur & queue->real_capacity - 1];
+            return *queue->array[cur & queue->real_capacity - 1];
         }
 
         Iterator &operator++() {
@@ -104,7 +114,7 @@ public:
     }
 
 private:
-    int log2_ceil(int num) {
+    static int log2_ceil(int num) {
         num--;
         num |= num >> 1; // 10 -> 11
         num |= num >> 2; // 1100 -> 1111
