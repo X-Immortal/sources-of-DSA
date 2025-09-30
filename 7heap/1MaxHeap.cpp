@@ -5,6 +5,8 @@
 #include <cstring>
 #include "MaxHeap.h"
 
+#define DEBUG 0
+
 using std::cout;
 using std::endl;
 
@@ -128,29 +130,31 @@ int MaxHeap::right(int index) const {
     return ret >= size ? -1 : ret;
 }
 
-// int main() {
-//     int arr[] = {4, 3, 2, 5, 1, 6, 0, 0, 0, 0};
-//     MaxHeap heap(arr, std::size(arr));
-//
-//     heap.poll(9);
-//     heap.poll(8);
-//     heap.poll(7);
-//     heap.poll(6);
-//
-//     heap.offer(9);
-//     heap.offer(8);
-//     heap.offer(7);
-//     heap.offer(10);
-//
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     cout << heap.poll() << endl;
-//     return 0;
-// }
+#if DEBUG == 1
+int main() {
+    int arr[] = {4, 3, 2, 5, 1, 6, 0, 0, 0, 0};
+    MaxHeap heap(arr, std::size(arr));
+
+    heap.poll(9);
+    heap.poll(8);
+    heap.poll(7);
+    heap.poll(6);
+
+    heap.offer(9);
+    heap.offer(8);
+    heap.offer(7);
+    heap.offer(10);
+
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    cout << heap.poll() << endl;
+    return 0;
+}
+#endif
