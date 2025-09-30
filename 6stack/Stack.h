@@ -10,15 +10,15 @@ class Stack {
 public:
     virtual ~Stack() = default;
 
-    virtual bool push(T value) = 0;
+    virtual bool push(const T &value) = 0;
 
     virtual T pop() = 0;
 
-    virtual T peek() = 0;
+    virtual T peek() const = 0;
 
-    virtual bool isEmpty() = 0;
+    virtual bool isEmpty() const = 0;
 
-    virtual bool isFull() = 0;
+    virtual bool isFull() const = 0;
 };
 
 #endif //ONLINE_CLASS_STACK_H

@@ -10,24 +10,29 @@ using std::endl;
 
 template<class T>
 class ArrayStack : public Stack<T> {
-    T *array;
+    static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
+
+    T **array;
     int capacity;
     int size = 0;
 
 public:
     explicit ArrayStack(int capacity) : capacity(capacity) {
-        array = new T[capacity];
+        array = new T *[capacity];
     }
 
     ~ArrayStack() override {
+        for (int i = 0; i < size; i++) {
+            delete array[i];
+        }
         delete[] array;
     }
 
-    bool push(T value) override {
+    bool push(const T &value) override {
         if (isFull()) {
             return false;
         }
-        array[size++] = value;
+        array[size++] = new T(value);
         return true;
     }
 
@@ -35,21 +40,23 @@ public:
         if (isEmpty()) {
             throw std::runtime_error("Stack is empty");
         }
-        return array[--size];
+        T ret = *array[--size];
+        delete array[size];
+        return ret;
     }
 
-    T peek() override {
+    T peek() const override {
         if (isEmpty()) {
             throw std::runtime_error("Stack is empty");
         }
-        return array[size - 1];
+        return *array[size - 1];
     }
 
-    bool isEmpty() override {
+    bool isEmpty() const override {
         return size == 0;
     }
 
-    bool isFull() override {
+    bool isFull() const override {
         return size >= capacity;
     }
 
@@ -64,7 +71,7 @@ public:
         }
 
         reference operator*() const {
-            return queue->array[cur];
+            return *queue->array[cur];
         }
 
         Iterator &operator++() {

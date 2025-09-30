@@ -11,11 +11,22 @@ using std::endl;
 
 template<class T>
 class LinkedListStack : public Stack<T> {
+    static_assert(std::is_copy_constructible_v<T>, "T must have copy constructor");
+
     struct Node {
-        T value;
+        T *value;
         Node *next;
 
-        explicit Node(T value = T(), Node *next = nullptr) : value(value), next(next) {
+        explicit Node(const T *value = nullptr, Node *next = nullptr) : next(next) {
+            if (value == nullptr) {
+                this->value = nullptr;
+            } else {
+                this->value = new T(*value);
+            }
+        }
+
+        ~Node() {
+            delete value;
         }
     };
 
@@ -36,11 +47,11 @@ public:
         }
     }
 
-    bool push(T value) override {
+    bool push(const T &value) override {
         if (isFull()) {
             return false;
         }
-        head->next = new Node(value, head->next);
+        head->next = new Node(&value, head->next);
         size++;
         return true;
     }
@@ -52,23 +63,23 @@ public:
         Node *node = head->next;
         head->next = node->next;
         size--;
-        T value = node->value;
+        T value = *node->value;
         delete node;
         return value;
     }
 
-    T peek() override {
+    T peek() const override {
         if (isEmpty()) {
             throw std::runtime_error("Stack is empty");
         }
-        return head->next->value;
+        return *head->next->value;
     }
 
-    bool isEmpty() override {
+    bool isEmpty() const override {
         return size == 0;
     }
 
-    bool isFull() override {
+    bool isFull() const override {
         return size >= capacity;
     }
 
@@ -83,7 +94,7 @@ public:
         }
 
         reference operator*() const {
-            return cur->value;
+            return *cur->value;
         }
 
         Iterator &operator++() {
