@@ -8,7 +8,7 @@ using std::cout;
 using std::endl;
 
 // 前序遍历
-void preOrder(TreeNode *root) {
+void preOrder(TreeNode<int> *root) {
     if (root == nullptr) {
         return;
     }
@@ -17,7 +17,7 @@ void preOrder(TreeNode *root) {
     preOrder(root->right);
 }
 
-void inOrder(TreeNode *root) {
+void inOrder(TreeNode<int> *root) {
     if (root == nullptr) {
         return;
     }
@@ -26,7 +26,7 @@ void inOrder(TreeNode *root) {
     inOrder(root->right);
 }
 
-void postOrder(TreeNode *root) {
+void postOrder(TreeNode<int> *root) {
     if (root == nullptr) {
         return;
     }
@@ -36,12 +36,12 @@ void postOrder(TreeNode *root) {
 }
 
 int main() {
-    TreeNode *root = new TreeNode(1);
-    TreeNode *n1 = new TreeNode(2);
-    TreeNode *n2 = new TreeNode(3);
-    TreeNode *n3 = new TreeNode(4);
-    TreeNode *n4= new TreeNode(5);
-    TreeNode *n5= new TreeNode(6);
+    TreeNode<int> *root = new TreeNode(1);
+    TreeNode<int> *n1 = new TreeNode(2);
+    TreeNode<int> *n2 = new TreeNode(3);
+    TreeNode<int> *n3 = new TreeNode(4);
+    TreeNode<int> *n4= new TreeNode(5);
+    TreeNode<int> *n5= new TreeNode(6);
     root->left = n1, root->right = n2;
     n1->left = n3;
     n2->left = n4, n2->right = n5;

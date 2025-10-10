@@ -10,14 +10,14 @@ using std::endl;
 
 enum Order {PRE, IN, POST};
 struct Frame {
-    TreeNode *node;
+    TreeNode<int> *node;
     int pc;
 
-    explicit Frame(TreeNode *node) : node(node), pc(0) {}
+    explicit Frame(TreeNode<int> *node) : node(node), pc(0) {}
 };
 
 // 模拟递归调用栈
-void traversal1(TreeNode *root, const Order order) {
+void traversal1(TreeNode<int> *root, const Order order) {
     std::stack<Frame> s;
     s.emplace(root);
     while (!s.empty()) {
@@ -52,14 +52,14 @@ void traversal1(TreeNode *root, const Order order) {
 
 enum State {RUN, OVER, UNKNOWN};
 
-void traversal2(TreeNode *root, const Order order) {
-    std::stack<TreeNode *> s;
+void traversal2(TreeNode<int> *root, const Order order) {
+    std::stack<TreeNode<int> *> s;
     s.push(root);
-    TreeNode *last = nullptr;
+    TreeNode<int> *last = nullptr;
     State state = RUN;
     State state_last = OVER;
     while (!s.empty()) {
-        TreeNode *cur = s.top();
+        TreeNode<int> *cur = s.top();
 
         if (cur == nullptr) {
             last = cur;
@@ -93,12 +93,12 @@ void traversal2(TreeNode *root, const Order order) {
 }
 
 int main() {
-    TreeNode *root = new TreeNode(1);
-    TreeNode *n1 = new TreeNode(2);
-    TreeNode *n2 = new TreeNode(3);
-    TreeNode *n3 = new TreeNode(4);
-    TreeNode *n4= new TreeNode(5);
-    TreeNode *n5= new TreeNode(6);
+    TreeNode<int> *root = new TreeNode<int>(1);
+    TreeNode<int> *n1 = new TreeNode<int>(2);
+    TreeNode<int> *n2 = new TreeNode<int>(3);
+    TreeNode<int> *n3 = new TreeNode<int>(4);
+    TreeNode<int> *n4= new TreeNode<int>(5);
+    TreeNode<int> *n5= new TreeNode<int>(6);
     root->left = n1, root->right = n2;
     n1->left = n3;
     n2->left = n4, n2->right = n5;

@@ -5,12 +5,13 @@
 #ifndef ONLINE_CLASS_TREENODE_H
 #define ONLINE_CLASS_TREENODE_H
 
+template<class T>
 struct TreeNode {
-    int val;
+    T val;
     TreeNode *left;
     TreeNode *right;
 
-    explicit TreeNode(int val, TreeNode *left = nullptr, TreeNode *right = nullptr):
+    explicit TreeNode(T val, TreeNode *left = nullptr, TreeNode *right = nullptr):
     val(val), left(left), right(right) {}
 };
 

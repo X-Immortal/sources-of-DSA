@@ -1,2 +1,3 @@
-add_executable(1traversal_recursive 1.traversal_recursive.cpp)
+add_executable(1traversal_recursive 1traversal_recursive.cpp)
 add_executable(2traversal_nonrecursive 2traversal_nonrecursive.cpp)
+add_executable(3expression_tree 3expression_tree.cpp)
