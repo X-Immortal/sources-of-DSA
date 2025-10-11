@@ -22,6 +22,7 @@ class BinarySearchTree {
         SBSTNode *left;
         SBSTNode *right;
 
+        // 万能引用+完美转发
         explicit SBSTNode(K key, V &&value, SBSTNode *left = nullptr, SBSTNode *right = nullptr) :
         key(key), value(std::forward<V>(value)), left(left), right(right) {}
     };
