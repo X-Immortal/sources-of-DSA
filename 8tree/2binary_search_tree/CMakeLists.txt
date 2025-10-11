@@ -1,0 +1,1 @@
+add_executable(1BinarySearchTree 1BinarySearchTree.cpp)

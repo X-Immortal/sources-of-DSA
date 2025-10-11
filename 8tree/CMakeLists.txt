@@ -1,1 +1,2 @@
 add_subdirectory(1binary_tree)
+add_subdirectory(2binary_search_tree)
