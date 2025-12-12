@@ -28,7 +28,7 @@ MaxHeap::~MaxHeap() {
 // 先找到最后一个非叶子节点
 // 然后从这个节点开始，从后往前依次执行下潜
 // 时间复杂度为O(n)
-// t = \sigma_{i=1}^h {2^{h-i}*(i-1))}
+// t = \sigma_{i=1}^h {2^{h-i}*(i-1)}
 // = 2^h - h - 1
 // = n - log(n) - 1
 void MaxHeap::heapify() {

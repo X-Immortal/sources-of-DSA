@@ -21,25 +21,25 @@ void traversal1(TreeNode<int> *root, const Order order) {
     std::stack<Frame> s;
     s.emplace(root);
     while (!s.empty()) {
-        Frame *cur = &s.top();
+        Frame &cur = s.top();
 
-        if (cur->node == nullptr) {
+        if (cur.node == nullptr) {
             s.pop();
             continue;
         }
 
-        if (order == cur->pc) {
-            cout << cur->node->val << " ";
+        if (order == cur.pc) {
+            cout << cur.node->val << " ";
         }
 
-        switch (cur->pc) {
+        switch (cur.pc) {
             case 0:
-                s.emplace(cur->node->left);
-                cur->pc++;
+                s.emplace(cur.node->left);
+                cur.pc++;
                 break;
             case 1:
-                s.emplace(cur->node->right);
-                cur->pc++;
+                s.emplace(cur.node->right);
+                cur.pc++;
                 break;
             case 2:
                 s.pop();
@@ -103,13 +103,13 @@ int main() {
     n1->left = n3;
     n2->left = n4, n2->right = n5;
 
-    traversal2(root, PRE);
+    traversal1(root, PRE);
     cout << endl;
 
-    traversal2(root, IN);
+    traversal1(root, IN);
     cout << endl;
 
-    traversal2(root, POST);
+    traversal1(root, POST);
     cout << endl;
 
     delete root, delete n1, delete n2, delete n3, delete n4, delete n5;

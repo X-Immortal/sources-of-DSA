@@ -7,6 +7,7 @@
 using namespace std;
 
 // 利用heapify和down实现排序
+// 时间复杂度O(nlog(n))
 void head_sort(int *arr, int len) {
     MaxHeap heap(arr, len);
     for (int i = len - 1; i >= 0; --i) {
