@@ -1,0 +1,3 @@
+add_executable(topological_sort topological_sort.cpp)
+
+target_link_libraries(topological_sort PRIVATE GraphBase)

@@ -1,0 +1,5 @@
+add_executable(1depth_first_search 1depth_first_search.cpp)
+add_executable(2breadth_first_search 2breadth_first_search.cpp)
+
+target_link_libraries(1depth_first_search PRIVATE GraphBase)
+target_link_libraries(2breadth_first_search PRIVATE GraphBase)

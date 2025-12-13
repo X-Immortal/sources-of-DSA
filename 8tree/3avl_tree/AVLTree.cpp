@@ -8,7 +8,7 @@
 using std::cout;
 using std::endl;
 
-namespace AVL {
+namespace AVLT {
     template<class K>
     concept Comparable = requires(const K &a, const K &b)
     {
@@ -251,7 +251,7 @@ namespace AVL {
 }
 
 int main() {
-    AVL::AVLTree<int, int> tree;
+    AVLT::AVLTree<int, int> tree;
     tree.put(9, 9);
     tree.put(5, 5);
     tree.put(3, 3);

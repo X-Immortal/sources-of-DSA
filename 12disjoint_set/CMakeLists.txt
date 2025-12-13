@@ -1,0 +1,1 @@
+add_executable(DisjointSet DisjointSet.cpp)
