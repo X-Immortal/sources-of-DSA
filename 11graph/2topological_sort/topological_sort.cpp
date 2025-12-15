@@ -38,7 +38,7 @@ void topological_sort_Kahn(std::vector<Vertex *> &graph) {
         Vertex *vertex = queue.front();
         queue.pop();
         graph.push_back(vertex);
-        for (auto edge : vertex->edges) {
+        for (auto &edge : vertex->edges) {
             if (--edge.linked->in_degree == 0) {
                 queue.push(edge.linked);
             }
@@ -59,7 +59,7 @@ void dfs(Vertex *vertex, std::stack<Vertex *> &stack) {
     }
 
     vertex->status = VISITING;
-    for (auto edge : vertex->edges) {
+    for (auto &edge : vertex->edges) {
         dfs(edge.linked, stack);
     }
 

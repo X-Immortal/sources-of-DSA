@@ -7,6 +7,7 @@
 
 #include <string>
 #include <list>
+#include <climits>
 
 struct Vertex;
 struct Edge;
@@ -20,9 +21,18 @@ enum Status {
 struct Vertex {
     std::string name;
     std::list<Edge> edges; // 邻接表，存储与当前顶点相连的边
+
+    // 用于遍历
     bool visited = false;
-    int in_degree = 0;
+
+    // 用于拓扑排序
+    int in_degree = 0; // 入度
     Status status = NOT_VISITED;
+
+    // 用于最短路
+    static constexpr int POS_INF = INT_MAX;
+    int distance = POS_INF; // 初始值为正无穷大
+    Vertex *prev = nullptr; // 指示当前节点与源节点最短路径上的父节点
 
 public:
     Vertex(const std::string &name);

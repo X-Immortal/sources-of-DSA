@@ -1,0 +1,7 @@
+add_executable(1Dijkstra 1Dijkstra.cpp)
+add_executable(2Bellman_Ford 2Bellman_Ford.cpp)
+add_executable(3Floyd_Warshall 3Floyd_Warshall.cpp)
+
+target_link_libraries(1Dijkstra PRIVATE GraphBase)
+target_link_libraries(2Bellman_Ford PRIVATE GraphBase)
+target_link_libraries(3Floyd_Warshall PRIVATE GraphBase)

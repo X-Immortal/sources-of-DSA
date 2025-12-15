@@ -11,7 +11,7 @@ using std::endl;
 void dfs_rec(Vertex *v) {
     v->visited = true;
     cout << v->name << " ";
-    for (auto edge : v->edges) {
+    for (auto &edge : v->edges) {
         if (!edge.linked->visited) {
             dfs_rec(edge.linked);
         }
@@ -27,7 +27,7 @@ void dfs_loop(Vertex *v) {
         stack.pop();
         cur->visited = true;
         cout << cur->name << " ";
-        for (auto edge : cur->edges) {
+        for (auto &edge : cur->edges) {
             if (!edge.linked->visited) {
                 stack.push(edge.linked);
             }

@@ -16,7 +16,7 @@ void bfs(Vertex *v) {
         Vertex *cur = queue.front();
         queue.pop();
         cout << cur->name << " ";
-        for (auto edge : cur->edges) {
+        for (auto &edge : cur->edges) {
             if (!edge.linked->visited) {
                 queue.push(edge.linked);
                 edge.linked->visited = true;
