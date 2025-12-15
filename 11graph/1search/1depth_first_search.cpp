@@ -8,6 +8,8 @@
 using std::cout;
 using std::endl;
 
+using namespace DG;
+
 void dfs_rec(Vertex *v) {
     v->visited = true;
     cout << v->name << " ";

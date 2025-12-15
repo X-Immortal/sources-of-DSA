@@ -7,9 +7,12 @@
 #include <unordered_map>
 #include <string>
 #include <algorithm>
+#include <stack>
 
 using std::cout;
 using std::endl;
+
+using namespace DG;
 
 namespace std {
     template<>
@@ -29,8 +32,9 @@ namespace std {
 
 using dist_arr_t = std::vector<std::vector<int>>;
 using prev_arr_t = std::vector<std::vector<Vertex *>>;
+using path_t = std::pair<dist_arr_t, prev_arr_t>;
 
-std::pair<dist_arr_t&, prev_arr_t&> get_distances(std::vector<Vertex *> &graph) {
+path_t init_arrs(const std::vector<Vertex *> &graph) {
     dist_arr_t distance(graph.size());
     prev_arr_t prev(graph.size());
     for (int begin = 0; begin < graph.size(); begin++) {
@@ -65,9 +69,9 @@ std::pair<dist_arr_t&, prev_arr_t&> get_distances(std::vector<Vertex *> &graph) 
 }
 
 // 多源最短路径算法：Floyd-Warshall算法
-void Floyd_Warshall(std::vector<Vertex *> &graph) {
+path_t Floyd_Warshall(const std::vector<Vertex *> &graph) {
     // 1. 初始化距离矩阵
-    auto &&arrs = get_distances(graph);
+    auto &&arrs = init_arrs(graph);
     auto &distances = arrs.first;
     auto &prev = arrs.second;
 
@@ -83,17 +87,66 @@ void Floyd_Warshall(std::vector<Vertex *> &graph) {
             // 4. 遍历所有终点
             for (int end = 0; end < graph.size(); ++end) {
                 // 中间节点到终点的路不通，直接跳过这个终点
-                if (distances[begin][mid] == Vertex::POS_INF) {
+                if (distances[mid][end] == Vertex::POS_INF) {
                     continue;
                 }
 
                 // 更新距离
                 int new_dist = distances[begin][mid] + distances[mid][end];
-                distances[begin][end] = std::min(distances[begin][end], new_dist);
+                if (new_dist < distances[begin][end]) {
+                    if (begin == end) {
+                        throw std::runtime_error("there is minus cycle in the graph");
+                    }
+                    distances[begin][end] = new_dist;
+                    prev[begin][end] = prev[mid][end];
+                }
             }
         }
     }
 
+    return {distances, prev};
+}
+
+void print_path(const std::vector<Vertex *> &graph, const path_t &path_info) {
+    auto &dist = path_info.first;
+    auto &prev = path_info.second;
+
+    for (int i = 0; i < graph.size(); i++) {
+        for (int j = 0; j < graph.size(); j++) {
+            cout << graph[i]->name << "->" << graph[j]->name << ": ";
+            if (dist[i][j] == Vertex::POS_INF) {
+                cout << "∞";
+            } else {
+                cout << dist[i][j];
+            }
+            cout << '\t';
+
+            if (i == j) {
+                cout << graph[i]->name << endl;
+                continue;
+            }
+
+            if (prev[i][j] == nullptr) {
+                cout << "null" << endl;
+                continue;
+            }
+
+            std::stack<std::string> path;
+            path.push(graph[j]->name);
+            for (int k = j; k != i; k = prev[i][k]->id) {
+                path.push(prev[i][k]->name);
+            }
+
+            while (!path.empty()) {
+                cout << path.top();
+                path.pop();
+                if (!path.empty()) {
+                    cout << "->";
+                }
+            }
+            cout << endl;
+        }
+    }
 }
 
 /*   ----(4)---> v1 ---(-2)---
@@ -121,12 +174,19 @@ int main() {
         Edge(&v4, 2)
     });
     v4.edges.assign({
-        Edge(&v2, -1)
+        Edge(&v2, -1), // 正常情况
+        // Edge(&v2, -6), // 负环
     });
 
     std::vector graph = {&v1, &v2, &v3, &v4};
 
-    Floyd_Warshall(graph);
+    try {
+        auto &&arrs = Floyd_Warshall(graph);
+        print_path(graph, arrs);
+    } catch (std::runtime_error &e) {
+        std::cerr << e.what() << std::endl;
+        return -1;
+    }
 
     return 0;
 }

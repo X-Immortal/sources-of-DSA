@@ -3,13 +3,17 @@
 //
 #include "Graph.h"
 #include <iostream>
+#ifdef WINe32
 #include <windows.h>
+#endif
 #include <vector>
 #include <queue>
 #include <stack>
 
 using std::cout;
 using std::endl;
+
+using namespace DG;
 
 // 拓扑排序：每个顶点应出现在由它可达的任何一个顶点之前
 // 前提条件：有向无环图
@@ -18,7 +22,7 @@ using std::endl;
 void topological_sort_Kahn(std::vector<Vertex *> &graph) {
     // 统计各个顶点的入度
     for (auto vertex : graph) {
-        for (auto edge : vertex->edges) {
+        for (auto &edge : vertex->edges) {
             edge.linked->in_degree++;
         }
     }
@@ -82,7 +86,9 @@ void topological_sort_dfs(std::vector<Vertex *> &graph) {
 }
 
 int main() {
+#ifdef WIN32
     SetConsoleOutputCP(CP_UTF8);
+#endif
 
     Vertex v1("网页基础");
     Vertex v2("Java基础");
@@ -110,7 +116,7 @@ int main() {
     }
 
     for (auto vertex : graph) {
-        cout << vertex->get_name() << " ";
+        cout << vertex->name << " ";
     }
 
     return 0;

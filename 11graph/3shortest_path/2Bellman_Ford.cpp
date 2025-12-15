@@ -8,6 +8,8 @@
 using std::cout;
 using std::endl;
 
+using namespace DG;
+
 // 单源最短路径算法：Bellman-Ford算法
 // 用于处理带负权边的图
 // 负环：环上所有边的权重之和为负
@@ -77,8 +79,8 @@ int main() {
     }
 
     for (auto vertex : graph) {
-        cout << vertex->get_name() << ": " << vertex->distance <<
-            "(" << (vertex->prev == nullptr ? "null" : vertex->prev->get_name()) << ")" << endl;
+        cout << vertex->name << ": " << vertex->distance <<
+            "(" << (vertex->prev == nullptr ? "null" : vertex->prev->name) << ")" << endl;
     }
 
     return 0;

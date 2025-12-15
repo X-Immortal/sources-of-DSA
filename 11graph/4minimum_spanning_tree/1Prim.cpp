@@ -1,9 +1,8 @@
 //
-// Created by xyx on 2025/12/14.
+// Created by  Apple on 2025/12/15.
 //
 #include "Graph.h"
 #include <iostream>
-#include <vector>
 #include <queue>
 
 using std::cout;
@@ -11,9 +10,9 @@ using std::endl;
 
 using namespace DG;
 
-// 单源最短路径算法：Dijkstra算法
-// 前提：所有边的权重都是正数
-void Dijkstra(std::vector<Vertex *> &graph, Vertex *start) {
+// 最小生成树算法：Prim算法
+// 过程与Dijkstra算法类似
+void Prim(std::vector<Vertex *> &graph, Vertex *start) {
     // 1. 为每个顶点设置一个初始距离，起点为0，其余为无穷大
     start->distance = 0;
 
@@ -21,7 +20,6 @@ void Dijkstra(std::vector<Vertex *> &graph, Vertex *start) {
     std::priority_queue queue([](Vertex *a, Vertex *b) {
         return a->distance >= b->distance;
     }, graph);
-
 
     while (!queue.empty()) {
         // 3. 从队列中获取距离最小的顶点
@@ -35,7 +33,7 @@ void Dijkstra(std::vector<Vertex *> &graph, Vertex *start) {
         // 4. 更新当前顶点所有未访问邻居的距离
         for (auto &edge : cur->edges) {
             if (!edge.linked->visited) {
-                int distance = cur->distance + edge.weight;
+                int distance = edge.weight;
                 if (distance < edge.linked->distance) {
                     edge.linked->distance = distance;
                     edge.linked->prev = cur;
@@ -58,34 +56,54 @@ int main() {
     Vertex v4("v4");
     Vertex v5("v5");
     Vertex v6("v6");
+    Vertex v7("v7");
 
     v1.edges.assign({
-        Edge(&v3, 9),
-        Edge(&v2, 7),
-        Edge(&v1, 14)
+        Edge(&v2, 2),
+        Edge(&v3, 4),
+        Edge(&v4, 1)
     });
     v2.edges.assign({
-        Edge(&v4, 15)
+        Edge(&v1, 2),
+        Edge(&v4, 3),
+        Edge(&v5, 10)
     });
     v3.edges.assign({
-        Edge(&v4, 11),
-        Edge(&v6, 2)
+        Edge(&v1, 4),
+        Edge(&v4, 2),
+        Edge(&v6, 5)
     });
     v4.edges.assign({
-        Edge(&v5, 6)
+        Edge(&v1, 1),
+        Edge(&v2, 3),
+        Edge(&v3, 2),
+        Edge(&v5, 7),
+        Edge(&v6, 8),
+        Edge(&v7, 4)
+    });
+    v5.edges.assign({
+        Edge(&v2, 10),
+        Edge(&v4, 7),
+        Edge(&v7, 6)
     });
     v6.edges.assign({
-        Edge(&v5, 9)
+        Edge(&v3, 5),
+        Edge(&v4, 8),
+        Edge(&v7, 1)
+    });
+    v7.edges.assign({
+        Edge(&v4, 4),
+        Edge(&v5, 6),
+        Edge(&v6, 1)
     });
 
-    std::vector graph = {&v1, &v2, &v3, &v4, &v5, &v6};
+    std::vector graph = {&v1, &v2, &v3, &v4, &v5, &v6, &v7};
 
-    Dijkstra(graph, &v1);
+    Prim(graph, &v1);
 
     for (auto vertex : graph) {
         cout << vertex->name << ": " << vertex->distance <<
             "(" << (vertex->prev == nullptr ? "null" : vertex->prev->name) << ")" << endl;
     }
-
     return 0;
 }

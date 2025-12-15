@@ -8,6 +8,8 @@
 using std::cout;
 using std::endl;
 
+using namespace DG;
+
 void bfs(Vertex *v) {
     std::queue<Vertex *> queue;
     queue.push(v);
