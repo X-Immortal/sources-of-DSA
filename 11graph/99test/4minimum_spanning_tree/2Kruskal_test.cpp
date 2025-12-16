@@ -9,41 +9,33 @@ using std::cout;
 using std::endl;
 
 int main() {
-    Vertex v1("v1");
-    Vertex v2("v2");
-    Vertex v3("v3");
-    Vertex v4("v4");
-    Vertex v5("v5");
-    Vertex v6("v6");
-    Vertex v7("v7");
+    UndirectedGraph graph;
 
-    Edge e12(&v1, &v2, 2);
-    Edge e13(&v1, &v3, 4);
-    Edge e14(&v1, &v4, 1);
-    Edge e24(&v2, &v4, 3);
-    Edge e25(&v2, &v5, 10);
-    Edge e34(&v3, &v4, 2);
-    Edge e36(&v3, &v6, 5);
-    Edge e45(&v4, &v5, 7);
-    Edge e46(&v4, &v6, 8);
-    Edge e47(&v4, &v7, 4);
-    Edge e57(&v5, &v7, 6);
-    Edge e67(&v6, &v7, 1);
+    graph.add_vertex({
+        "v1", "v2", "v3",
+        "v4", "v5", "v6",
+        "v7"
+    });
 
-    v1.edges.assign({&e12, &e13, &e14});
-    v2.edges.assign({&e12, &e24, &e25});
-    v3.edges.assign({&e13, &e34, &e36});
-    v4.edges.assign({&e14, &e24, &e34, &e45, &e46, &e47});
-    v5.edges.assign({&e25, &e45, &e57});
-    v6.edges.assign({&e36, &e46, &e67});
-    v7.edges.assign({&e47, &e57, &e67});
+    graph.link("v1", "v2", 2);
+    graph.link("v1", "v3", 4);
+    graph.link("v1", "v4", 1);
+    graph.link("v2", "v4", 3);
+    graph.link("v2", "v5", 10);
+    graph.link("v3", "v4", 2);
+    graph.link("v3", "v6", 5);
+    graph.link("v4", "v5", 7);
+    graph.link("v4", "v6", 8);
+    graph.link("v4", "v7", 4);
+    graph.link("v5", "v7", 6);
+    graph.link("v6", "v7", 1);
 
-    std::vector graph = {&e12, &e13, &e14, &e24, &e25, &e34, &e36, &e45, &e46, &e47, &e57, &e67};
-
-    auto &&mst = Kruskal(graph, 7);
+    auto &&mst = graph.Kruskal();
 
     for (auto edge : mst) {
-        cout << edge->v1->name << "<->" << edge->v2->name << ": " << edge->weight << endl;
+        cout << graph.v(graph.e(edge)->v1)->name << "<->" <<
+            graph.v(graph.e(edge)->v2)->name << ": " <<
+                graph.e(edge)->weight << endl;
     }
 
     return 0;

@@ -5,6 +5,7 @@
 #include <queue>
 
 void DirectedGraph::bfs(int start, const std::function<void(Vertex *)> &callback) {
+    reset();
      auto vertex = v(start);
      std::queue<Vertex *> queue;
      queue.push(vertex);

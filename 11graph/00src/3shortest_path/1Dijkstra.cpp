@@ -11,9 +11,8 @@
 void DirectedGraph::Dijkstra(int start) {
     // 1. 为每个顶点设置一个初始距离，起点为0，其余为无穷大
     reset();
-    auto &dist = vertices[start].distance;
-    dist[start] = 0;
-    auto &prev = vertices[start].prev;
+    auto &dist = v(start)->distance;
+    auto &prev = v(start)->prev;
 
     // 优先级队列中存储<id, dist>
     // 此处应该存储距离的副本，而不应该让同一节点共享同一份距离，否则会破坏堆的特性

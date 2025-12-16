@@ -22,36 +22,26 @@ using std::endl;
  *  |_____(1)_________|
  */
 int main() {
-    Vertex v1("v1");
-    Vertex v2("v2");
-    Vertex v3("v3");
-    Vertex v4("v4");
+    DirectedGraph graph;
 
-    v1.edges.assign({
-        Edge(&v2, 2),
-        // Edge(&v3, 1) // 正常情况
-    });
-    v2.edges.assign({
-        // Edge(&v3, -2), // 正常情况
-        Edge(&v3, -4), // 负环
-    });
-    v3.edges.assign({
-        Edge(&v4, 1),
-        Edge(&v1, 1), // 负环
-    });
+    graph.add_vertex({"v1", "v2", "v3", "v4"});
 
-    std::vector graph = {&v1, &v2, &v3, &v4};
+    graph.link("v1", "v2", 2);
+    // graph.link("v2", "v3", 1); // 正常情况
+    // graph.link("v2", "v3", -2); // 正常情况
+    graph.link("v2", "v3", -4); // 负环
+    graph.link("v3", "v4", 1);
+    graph.link("v3", "v1", 1); // 负环
 
     try {
-        Bellman_Ford(graph, &v1);
+        auto &&result = graph.Bellman_Ford("v1");
+        for (auto &p : result) {
+            cout << p.first << ": " << p.second.first <<
+                "(" << p.second.second << ")" << endl;
+        }
     } catch (std::runtime_error &e) {
         std::cerr << e.what() << endl;
         return -1;
-    }
-
-    for (auto vertex : graph) {
-        cout << vertex->name << ": " << vertex->distance <<
-            "(" << (vertex->prev == nullptr ? "null" : vertex->prev->name) << ")" << endl;
     }
 
     return 0;

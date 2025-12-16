@@ -26,6 +26,7 @@ void Graph::b_Vertex::reset(int size) {
     in_degree = 0;
     status = NOT_VISITED;
     distance.assign(size, POS_INF);
+    distance[id] = 0;
 }
 
 

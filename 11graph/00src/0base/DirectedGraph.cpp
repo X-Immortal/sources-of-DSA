@@ -10,6 +10,8 @@
 void DirectedGraph::Vertex::reset(int size) {
     b_Vertex::reset(size);
     prev.assign(size, -1);
+    min_weight = POS_INF;
+    min_linked = -1;
 }
 
 void DirectedGraph::Vertex::link(int linked, int weight) {
@@ -28,7 +30,7 @@ bool DirectedGraph::add_vertex(const std::string &name) {
     }
 
     vertices.emplace_back(name);
-    vertex_map.insert({name, vertices.size() - 1});
+    vertex_map.emplace(name, vertices.size() - 1);
     return true;
 }
 
@@ -52,6 +54,10 @@ bool DirectedGraph::link(const std::string &begin, const std::string &end, int w
     }
 }
 
+bool DirectedGraph::bi_link(const std::string &begin, const std::string &end, int weight) {
+    return link(begin, end, weight) && link(end, begin, weight);
+}
+
 void DirectedGraph::reset() {
     for (auto &v : vertices) {
         v.reset(vertices.size());
@@ -70,15 +76,14 @@ void DirectedGraph::dfs_rec(int start, const std::function<void(Vertex *)> &call
     dfs_rec_do(start, callback, true);
 }
 
-std::vector<std::pair<std::string, std::pair<int, std::string>> >
-DirectedGraph::Dijkstra(const std::string &start) {
+DirectedGraph::single_path_t DirectedGraph::Dijkstra(const std::string &start) {
     try {
         int start_id = vertex_map.at(start);
         Dijkstra(start_id);
-        std::vector<std::pair<std::string, std::pair<int, std::string>>> result;
+        single_path_t result;
         result.reserve(vertices.size());
         auto &dist = vertices[start_id].distance;
-        auto &&prev = vertices[start_id].prev;
+        auto &prev = vertices[start_id].prev;
         for (int i = 0; i < vertices.size(); i++) {
             result.emplace_back(vertices[i].name, std::make_pair(dist[i], prev[i] == -1 ? "null" : vertices[prev[i]].name));
         }
@@ -86,4 +91,36 @@ DirectedGraph::Dijkstra(const std::string &start) {
     } catch (std::out_of_range &) {
         return {};
     }
+}
+
+DirectedGraph::single_path_t DirectedGraph::Bellman_Ford(const std::string &start) {
+    try {
+        int start_id = vertex_map.at(start);
+        Bellman_Ford(start_id);
+        single_path_t result;
+        result.reserve(vertices.size());
+        auto &dist = vertices[start_id].distance;
+        auto &prev = vertices[start_id].prev;
+        for (int i = 0; i < vertices.size(); i++) {
+            result.emplace_back(vertices[i].name, std::make_pair(dist[i], prev[i] == -1 ? "null" : vertices[prev[i]].name));
+        }
+        return result;
+    } catch (std::out_of_range &) {
+        return {};
+    }
+}
+
+DirectedGraph::full_path_t DirectedGraph::Floyd_Warshall() {
+    Floyd_Warshall_do();
+    full_path_t result;
+    for (auto &vertex : vertices) {
+        single_path_t path;
+        auto &dist = vertex.distance;
+        auto &prev = vertex.prev;
+        for (int i = 0; i < vertices.size(); i++) {
+            path.emplace_back(v(i)->name, make_pair(dist[i], prev[i] == -1 ? "null" : vertices[prev[i]].name));
+        }
+        result.emplace_back(vertex.name, path);
+    }
+    return result;
 }
