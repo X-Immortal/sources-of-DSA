@@ -1,0 +1,7 @@
+add_executable(1Dijkstra_test 1Dijkstra_test.cpp)
+add_executable(2Bellman_Ford_test 2Bellman_Ford_test.cpp)
+add_executable(3Floyd_Warshall_test 3Floyd_Warshall_test.cpp)
+
+target_link_libraries(1Dijkstra_test PRIVATE Graph)
+target_link_libraries(2Bellman_Ford_test PRIVATE Graph)
+target_link_libraries(3Floyd_Warshall_test PRIVATE Graph)

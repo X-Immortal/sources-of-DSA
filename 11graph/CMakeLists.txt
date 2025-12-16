@@ -1,12 +1,13 @@
-include_directories(0base)
+set(INCLUDE_PATH "00src/0base")
+set(DS_DIR ${PROJECT_SOURCE_DIR}/12disjoint_set)
 
-file(GLOB BASE_SRCS "0base/*.cpp")
+include_directories(${INCLUDE_PATH})
 
-add_library(GraphBase STATIC ${BASE_SRCS})
+file(GLOB GRAPH_SRCS "00src/*/*.cpp")
+file(GLOB DS_SRCS "${DS_DIR}/*.cpp")
 
-target_include_directories(GraphBase PUBLIC 0base)
+add_library(Graph STATIC ${GRAPH_SRCS} ${DS_SRCS})
 
-add_subdirectory(1search)
-add_subdirectory(2topological_sort)
-add_subdirectory(3shortest_path)
-add_subdirectory(4minimum_spanning_tree)
+target_include_directories(Graph PUBLIC ${INCLUDE_PATH} ${DS_DIR})
+
+add_subdirectory(99test)

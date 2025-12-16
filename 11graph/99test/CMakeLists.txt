@@ -1,0 +1,4 @@
+add_subdirectory(1search)
+add_subdirectory(2topological_sort)
+add_subdirectory(3shortest_path)
+add_subdirectory(4minimum_spanning_tree)
