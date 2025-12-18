@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <functional>
 
 using std::cout;
 using std::endl;
@@ -137,6 +138,10 @@ namespace BT {
         const int MIN_KEY_NUM;
 
     public:
+        ~BTree() {
+            post_order(root, [](Node *node) { delete node; });
+        }
+
         explicit BTree(int min_degree = 2) :
             min_degree(min_degree), MAX_KEY_NUM(2 * min_degree - 1), MIN_KEY_NUM(min_degree - 1) {
             if (min_degree < 2) {
@@ -160,6 +165,13 @@ namespace BT {
         }
 
     private:
+        void post_order(Node *node, const std::function<void(Node *)> &func) {
+            for (auto child: node->children) {
+                post_order(child, func);
+            }
+            func(node);
+        }
+
         template<typename TK>
             requires std::constructible_from<K, TK&&>
         void put(Node *node, TK &&key, Node *parent, int index_in_parent) {
