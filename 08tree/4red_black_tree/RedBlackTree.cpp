@@ -2,6 +2,7 @@
 // Created by xyx on 2025/12/10.
 //
 #include <iostream>
+#include <functional>
 
 using std::cout;
 using std::endl;
@@ -68,6 +69,12 @@ namespace RBT {
         Node *root = nullptr;
 
     public:
+        ~RedBlackTree() {
+            post_order(root, [](Node *node) {
+                delete node;
+            });
+        }
+
         template<typename TK, typename TV>
             requires std::constructible_from<K, TK &&> && std::constructible_from<V, TV &&>
         void put(TK &&key, TV &&value) {
@@ -110,6 +117,15 @@ namespace RBT {
         }
 
     private:
+        void post_order(Node *node, const std::function<void(Node *)> &func) {
+            if (node == nullptr) {
+                return;
+            }
+            post_order(node->left, func);
+            post_order(node->right, func);
+            func(node);
+        }
+
         Node *get_node(const K &key) {
             Node *cur = root;
             while (cur != nullptr) {
